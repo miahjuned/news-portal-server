@@ -25,6 +25,8 @@ app.get('/', (req, res) => {
   res.send('Welcome to News Portal Backend')
 })
 
+
+
 // Get all News
 app.get('/allnews', (req, res) => {
   client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
@@ -50,6 +52,8 @@ app.get('/alladmin' ,(req, res) => {
   })
   client.close();
 })
+
+
 
 // Get all User
 app.get('/users', (req, res) => {
@@ -84,44 +88,70 @@ app.post('/newsadd' , (req , res) => {
 })
 
 
-app.post('/newadmin', (req, res) => {
-  const data = req.body;
-  console.log("add newAdmin data", data);
-  const email = req.body.email;
-  client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
-  client.connect(conErr => {
-    console.log("add new data arr", conErr);
-    const adminCollection = client.db("newsPortal").collection("Admin");
-    adminCollection.find({adminEmail: email}).toArray((err, admin) => {
-      if (admin.length === 0) {
-        res.send("You are already an admin", admin)
-      } else {
-        adminCollection.insertOne(data, (err, result) => {
-          err ? res.status(500).send({message: err}) : res.send(result.insertedCount > 0)
-          console.log("db data add error,", err) 
-        })        
-      }
-    })
-  })
-  client.close();
-
-})
 
 
 app.post('/loginuser', (req, res) => {
-  const loginuser = req.body;
-  console.log("login user data", loginuser);
+  const loginUser = req.body;
+  console.log("login user data", loginUser);
   client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
   client.connect(conErr => {
+    console.log("login user connent err", conErr)
     const userCollection = client.db("newsPortal").collection("user");
-    userCollection.insertOne(loginuser, (err, result) => {
-      err ? res.status(500).send({message: err}) : res.send(result.insertedCount > 0)
+    userCollection.insertOne(loginUser, (err, result) => {
+      err ? res.status(500).send({message: err}) : res.send(result)
     })
 
   })
   client.close();
 
 })
+
+
+
+app.post('/newadmin', (req, res) => {
+  const admin = req.body;
+  console.log("login user data", admin);
+  client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+  client.connect(conErr => {
+    console.log("login user connent err", conErr)
+    const adminCollection = client.db("newsPortal").collection("Admin");
+    adminCollection.insertOne(admin, (err, result) => {
+      err ? res.status(500).send({message: err}) : res.send(result)
+    })
+
+  })
+  client.close();
+
+})
+
+
+
+// app.post('/newadmin', (req, res) => {
+//   const data = req.body;
+//   console.log("add newAdmin data", data);
+//   const email = req.body.email;
+//   console.log('email', email)
+//   console
+//   client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+//   client.connect(conErr => {
+//     console.log("add new data arr", conErr);
+//     const adminCollection = client.db("newsPortal").collection("Admin");
+//     adminCollection.find({adminEmail: email}).toArray((err, admin) => {
+//       if (admin.length == 0) {
+//         res.send("You are already an admin", admin)
+//       } else {
+//         adminCollection.insertOne(data, (err, result) => {
+//           err ? res.status(500).send({message: err}) : res.send(result.insertedCount > 0)
+//           console.log("db data add error,", err) 
+//         })        
+//       }
+//     })
+//   })
+//   client.close();
+
+// })
+
+
 
 
 // // MongoDB database
